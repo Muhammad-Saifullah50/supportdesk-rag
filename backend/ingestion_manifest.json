@@ -1,0 +1,85 @@
+{
+  "documents": [
+    {
+      "source_file": "01_pricing_and_plans (2).pdf",
+      "document_id": "northwind_pricing_plans",
+      "document_title": "Northwind Cloud - Pricing and Plans",
+      "version": "4.2",
+      "effective_date": "2026-10-14",
+      "region": "GLOBAL",
+      "category": "pricing_and_plans"
+    },
+    {
+      "source_file": "02_refund_and_cancellation_policy (2).pdf",
+      "document_id": "northwind_refund_cancellation_policy",
+      "document_title": "Northwind Cloud - Refund and Cancellation Policy",
+      "version": "3.1",
+      "effective_date": "2026-01-01",
+      "region": "GLOBAL",
+      "category": "refund_policy"
+    },
+    {
+      "source_file": "03_api_reference_and_rate_limits (2).pdf",
+      "document_id": "northwind_api_reference",
+      "document_title": "Northwind Cloud - API Reference and Rate Limits",
+      "version": "5.3",
+      "effective_date": "2026-10-14",
+      "region": "GLOBAL",
+      "category": "api_reference"
+    },
+    {
+      "source_file": "04_security_and_compliance (2).pdf",
+      "document_id": "northwind_security_compliance",
+      "document_title": "Northwind Cloud - Security and Compliance Overview",
+      "version": "2.8",
+      "effective_date": "2026-10-14",
+      "region": "GLOBAL",
+      "category": "security_compliance"
+    },
+    {
+      "source_file": "05_onboarding_guide (2).pdf",
+      "document_id": "northwind_onboarding_guide",
+      "document_title": "Northwind Cloud - Onboarding Guide",
+      "version": "3.4",
+      "effective_date": "2026-08-05",
+      "region": "GLOBAL",
+      "category": "onboarding"
+    },
+    {
+      "source_file": "06_troubleshooting_faq (2).pdf",
+      "document_id": "northwind_troubleshooting_faq",
+      "document_title": "Northwind Cloud - Troubleshooting FAQ",
+      "version": "2.6",
+      "effective_date": "2026-10-14",
+      "region": "GLOBAL",
+      "category": "troubleshooting_faq"
+    },
+    {
+      "source_file": "07_changelog (2).pdf",
+      "document_id": "northwind_platform_policy_changelog",
+      "document_title": "Northwind Cloud - Platform and Policy Changelog",
+      "version": "3.8",
+      "effective_date": "2026-10-14",
+      "region": "GLOBAL",
+      "category": "changelog"
+    },
+    {
+      "source_file": "08_sla_and_support_tiers (2).pdf",
+      "document_id": "northwind_sla_support_tiers",
+      "document_title": "Northwind Cloud - SLA and Support Tiers",
+      "version": "3.3",
+      "effective_date": "2026-10-14",
+      "region": "GLOBAL",
+      "category": "sla_and_support"
+    },
+    {
+      "source_file": "09_legacy_pricing_2025_ARCHIVED (2).pdf",
+      "document_id": "northwind_pricing_plans_2025_archived",
+      "document_title": "Northwind Cloud - Pricing and Plans (2025 Edition, Archived)",
+      "version": "2.4",
+      "effective_date": "2025-06-30",
+      "region": "GLOBAL",
+      "category": "legacy_pricing"
+    }
+  ]
+}

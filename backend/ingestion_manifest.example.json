@@ -1,0 +1,13 @@
+{
+  "documents": [
+    {
+      "source_file": "REPLACE_WITH_PDF_FILENAME.pdf",
+      "document_id": "REPLACE_WITH_STABLE_DOCUMENT_ID",
+      "document_title": "REPLACE_WITH_DOCUMENT_TITLE",
+      "version": "REPLACE_WITH_VERSION",
+      "effective_date": "YYYY-MM-DD",
+      "region": "REPLACE_WITH_REGION",
+      "category": "REPLACE_WITH_CATEGORY"
+    }
+  ]
+}
