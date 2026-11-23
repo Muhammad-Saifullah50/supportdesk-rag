@@ -221,10 +221,14 @@ def main() -> None:
         evaluate_entry(args.base_url, entry, index, args.timeout)
         for index, entry in enumerate(dataset)
     ]
+    try:
+        dataset_label = str(args.dataset.relative_to(ROOT))
+    except ValueError:
+        dataset_label = str(args.dataset)
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "base_url": args.base_url.rstrip("/"),
-        "dataset": str(args.dataset.relative_to(ROOT)),
+        "dataset": dataset_label,
         "dataset_count": len(dataset),
         "summary": summarize(results),
         "results": results,
