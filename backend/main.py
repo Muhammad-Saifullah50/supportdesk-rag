@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from datetime import date, datetime, time, timedelta, timezone
 from math import ceil
 from pathlib import Path
@@ -23,7 +24,7 @@ from rag import (
 
 logger = logging.getLogger(__name__)
 app = FastAPI(title="SupportDesk-RAG API")
-DAILY_REQUEST_LIMIT = 10
+DAILY_REQUEST_LIMIT = int(os.getenv("DAILY_REQUEST_LIMIT", "10"))
 _daily_request_counts: dict[str, tuple[date, int]] = {}
 _daily_request_counts_lock = Lock()
 
