@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
+from cohere import CohereReranker
 from openrouter import OpenRouterClient
 
 BACKEND_DIR = Path(__file__).resolve().parent
@@ -19,7 +20,7 @@ load_dotenv(BACKEND_DIR / ".env")
 REFUSAL = "I do not have sufficient information in the provided corpus to answer this question."
 EMBEDDING_MODEL = "nvidia/nemotron-3.5-embed-1b:free"
 EMBEDDING_DIMENSIONS = 2048
-RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+RERANKER_MODEL = "rerank-v3.5"
 RERANK_THRESHOLD = 0.35
 RRF_LIMIT = 15
 RETRIEVAL_CANDIDATE_LIMIT = 50
@@ -278,23 +279,33 @@ class RetrievalService:
         qdrant_url = os.getenv("QDRANT_URL")
         qdrant_api_key = os.getenv("QDRANT_API_KEY")
         openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+        cohere_api_key = os.getenv("COHERE_API_KEY")
         if not qdrant_url or not qdrant_api_key:
             raise ConfigurationError(
                 "QDRANT_URL and QDRANT_API_KEY must be configured."
             )
         if not openrouter_api_key:
             raise ConfigurationError("OPENROUTER_API_KEY must be configured.")
+        if not cohere_api_key:
+            raise ConfigurationError("COHERE_API_KEY must be configured.")
 
         from qdrant_client import QdrantClient
 
+        collection_name = os.getenv("QDRANT_COLLECTION", DEFAULT_COLLECTION)
+        qdrant = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
         chunks_path = Path(os.getenv("CHUNKS_PATH", str(CHUNKS_PATH)))
         chunks = load_chunk_records(chunks_path)
+        if not chunks:
+            chunks = load_chunk_records_from_qdrant(qdrant, collection_name)
         return cls(
-            qdrant=QdrantClient(url=qdrant_url, api_key=qdrant_api_key),
+            qdrant=qdrant,
             openrouter=OpenRouterClient(openrouter_api_key),
             chunks=chunks,
-            reranker=None,
-            collection_name=os.getenv("QDRANT_COLLECTION", DEFAULT_COLLECTION),
+            reranker=CohereReranker(
+                cohere_api_key,
+                os.getenv("RERANKER_MODEL", RERANKER_MODEL),
+            ),
+            collection_name=collection_name,
         )
 
     def retrieve(
@@ -354,16 +365,12 @@ class RetrievalService:
 
     def rerank(self, question: str, chunks: list[dict[str, Any]]) -> list[float]:
         if self.reranker is None:
-            try:
-                import torch
-                from sentence_transformers import CrossEncoder
-            except ImportError as exc:
-                raise RuntimeError(
-                    "Install sentence-transformers to enable reranking."
-                ) from exc
-            self.reranker = CrossEncoder(
+            cohere_api_key = os.getenv("COHERE_API_KEY")
+            if not cohere_api_key:
+                raise ConfigurationError("COHERE_API_KEY must be configured.")
+            self.reranker = CohereReranker(
+                cohere_api_key,
                 os.getenv("RERANKER_MODEL", RERANKER_MODEL),
-                activation_fn=torch.nn.Sigmoid(),
             )
         queries = query_facets(question)
         scores = self.reranker.predict(
@@ -474,6 +481,34 @@ def load_chunk_records(path: Path) -> list[dict[str, Any]]:
                     f"Chunk on line {line_number} is missing fields: {', '.join(sorted(missing))}."
                 )
             chunks.append(chunk)
+    return chunks
+
+
+def load_chunk_records_from_qdrant(
+    qdrant: Any,
+    collection_name: str,
+) -> list[dict[str, Any]]:
+    """Load chunk payloads when serverless deployment has no local manifest."""
+    chunks: list[dict[str, Any]] = []
+    offset: Any = None
+    while True:
+        page, offset = qdrant.scroll(
+            collection_name=collection_name,
+            limit=1000,
+            offset=offset,
+            with_payload=True,
+            with_vectors=False,
+        )
+        chunks.extend(
+            point.payload for point in page if isinstance(point.payload, dict)
+        )
+        if offset is None:
+            break
+
+    if not chunks:
+        raise CorpusNotIndexedError(
+            f"No chunk payloads found in Qdrant collection {collection_name!r}."
+        )
     return chunks
 
 

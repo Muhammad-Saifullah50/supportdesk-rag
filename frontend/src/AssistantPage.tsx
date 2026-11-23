@@ -26,7 +26,7 @@ interface ChatTurn {
   error: string | null;
 }
 
-export const App: React.FC = () => {
+export const AssistantPage: React.FC = () => {
   const [question, setQuestion] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [turns, setTurns] = useState<ChatTurn[]>([]);
@@ -47,6 +47,15 @@ export const App: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: trimmed, history: history.slice(-20) }),
       });
+
+      if (res.status === 429) {
+        setTurns((currentTurns) => currentTurns.map((turn, index) => (
+          index === currentTurns.length - 1
+            ? { ...turn, error: "You've reached today's demo limit of 10 questions per IP. Try again after midnight UTC." }
+            : turn
+        )));
+        return;
+      }
 
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
@@ -240,4 +249,4 @@ export const App: React.FC = () => {
   );
 };
 
-export default App;
+export default AssistantPage;

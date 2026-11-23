@@ -6,6 +6,7 @@ from unittest.mock import Mock
 import tiktoken
 from pydantic import ValidationError
 
+from cohere import COHERE_RERANK_URL, CohereReranker
 from ingest import Section, chunk_sections
 from main import AskResponse, RetrievalRequest, ask_question
 from openrouter import OpenRouterClient
@@ -19,8 +20,62 @@ from rag import (
     metadata_matches,
     query_facets,
     reciprocal_rank_fusion,
+    load_chunk_records_from_qdrant,
     validate_answer_payload,
 )
+
+
+class CohereRerankerTests(unittest.TestCase):
+    def test_predict_preserves_pair_order_across_query_batches(self):
+        http_client = Mock()
+        first_response = Mock()
+        first_response.json.return_value = {
+            "results": [
+                {"index": 1, "relevance_score": 0.8},
+                {"index": 0, "relevance_score": 0.2},
+            ]
+        }
+        second_response = Mock()
+        second_response.json.return_value = {
+            "results": [{"index": 0, "relevance_score": 0.6}]
+        }
+        http_client.post.side_effect = [first_response, second_response]
+        reranker = CohereReranker("test-key", "rerank-v3.5", http_client)
+
+        scores = reranker.predict(
+            [("query-a", "doc-a"), ("query-b", "doc-b"), ("query-a", "doc-c")]
+        )
+
+        self.assertEqual(scores, [0.2, 0.6, 0.8])
+        self.assertEqual(http_client.post.call_count, 2)
+        first_call = http_client.post.call_args_list[0]
+        self.assertEqual(first_call.args[0], COHERE_RERANK_URL)
+        self.assertEqual(
+            first_call.kwargs["json"],
+            {
+                "model": "rerank-v3.5",
+                "query": "query-a",
+                "documents": ["doc-a", "doc-c"],
+                "top_n": 2,
+            },
+        )
+
+
+class QdrantChunkLoadingTests(unittest.TestCase):
+    def test_loads_all_pages_when_local_manifest_is_missing(self):
+        first = make_chunk("first", "First chunk")
+        second = make_chunk("second", "Second chunk")
+        qdrant = Mock()
+        qdrant.scroll.side_effect = [
+            ([SimpleNamespace(payload=first)], "next-page"),
+            ([SimpleNamespace(payload=second)], None),
+        ]
+
+        chunks = load_chunk_records_from_qdrant(qdrant, "chunks")
+
+        self.assertEqual([chunk["chunk_id"] for chunk in chunks], ["first", "second"])
+        self.assertEqual(qdrant.scroll.call_count, 2)
+        self.assertEqual(qdrant.scroll.call_args.kwargs["offset"], "next-page")
 
 
 def make_chunk(chunk_id: str, content: str, **overrides):
@@ -456,7 +511,9 @@ class RetrievalPipelineTests(unittest.TestCase):
         service = Mock()
         service.retrieve.return_value = []
 
-        response = ask_question(RetrievalRequest(question="unknown topic"), service)
+        response = ask_question(
+            RetrievalRequest(question="unknown topic"), service=service
+        )
 
         self.assertIsInstance(response, AskResponse)
         self.assertEqual(response.answer, REFUSAL)
@@ -480,7 +537,9 @@ class RetrievalPipelineTests(unittest.TestCase):
             reranker=reranker,
         )
 
-        response = ask_question(RetrievalRequest(question="BGP failover"), service)
+        response = ask_question(
+            RetrievalRequest(question="BGP failover"), service=service
+        )
 
         self.assertEqual(response.answer, REFUSAL)
         openrouter.complete_json.assert_not_called()
@@ -535,7 +594,7 @@ class RetrievalPipelineTests(unittest.TestCase):
             RetrievalRequest(
                 question="What does the EU runbook specify?", history=history
             ),
-            service,
+            service=service,
         )
 
         self.assertEqual(

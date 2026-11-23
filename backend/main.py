@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import logging
+from datetime import date, datetime, time, timedelta, timezone
+from math import ceil
 from pathlib import Path
+from threading import Lock
 from typing import Any, Literal
 from urllib.parse import quote
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -20,6 +23,9 @@ from rag import (
 
 logger = logging.getLogger(__name__)
 app = FastAPI(title="SupportDesk-RAG API")
+DAILY_REQUEST_LIMIT = 10
+_daily_request_counts: dict[str, tuple[date, int]] = {}
+_daily_request_counts_lock = Lock()
 
 app.add_middleware(
     CORSMiddleware,
@@ -101,29 +107,6 @@ class RetrievalRequest(BaseModel):
         }
 
 
-class RetrievedChunk(BaseModel):
-    chunk_id: str
-    document_id: str
-    document_title: str
-    version: str
-    effective_date: str
-    region: str
-    category: str
-    section_title: str
-    content: str
-    source_file: str
-    page_start: int
-    page_end: int
-    rrf_score: float
-    rerank_score: float
-
-
-class RetrievalResponse(BaseModel):
-    question: str
-    chunks: list[RetrievedChunk]
-    refusal: str | None = None
-
-
 class Citation(BaseModel):
     id: str
     document_id: str
@@ -172,27 +155,53 @@ def retrieve_chunks(
         ) from exc
 
 
+def consume_daily_request(ip_address: str, now: datetime | None = None) -> int | None:
+    current_time = now or datetime.now(timezone.utc)
+    current_day = current_time.date()
+
+    with _daily_request_counts_lock:
+        previous_day, count = _daily_request_counts.get(ip_address, (current_day, 0))
+        if previous_day != current_day:
+            count = 0
+
+        if count >= DAILY_REQUEST_LIMIT:
+            reset_at = datetime.combine(
+                current_day + timedelta(days=1), time.min, tzinfo=timezone.utc
+            )
+            return max(1, ceil((reset_at - current_time).total_seconds()))
+
+        _daily_request_counts[ip_address] = (current_day, count + 1)
+        if len(_daily_request_counts) > 1024:
+            for stale_ip, (stored_day, _) in tuple(_daily_request_counts.items()):
+                if stored_day < current_day:
+                    del _daily_request_counts[stale_ip]
+
+    return None
+
+
+def enforce_daily_ip_limit(request: Request) -> None:
+    forwarded_for = request.headers.get("x-forwarded-for")
+    ip_address = forwarded_for.split(",", 1)[0].strip() if forwarded_for else ""
+    if not ip_address:
+        ip_address = request.client.host if request.client else "unknown"
+    retry_after = consume_daily_request(ip_address)
+    if retry_after is not None:
+        raise HTTPException(
+            status_code=429,
+            detail="Daily demo request limit reached. Try again after midnight UTC.",
+            headers={"Retry-After": str(retry_after)},
+        )
+
+
 @app.get("/api/health")
 def health_check() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.post("/api/retrieve", response_model=RetrievalResponse)
-def retrieve_endpoint(
-    payload: RetrievalRequest,
-    service: RetrievalService = Depends(get_service),
-) -> RetrievalResponse:
-    chunks = retrieve_chunks(payload, service)
-    return RetrievalResponse(
-        question=payload.question,
-        chunks=[RetrievedChunk.model_validate(chunk) for chunk in chunks],
-        refusal=REFUSAL if not chunks else None,
-    )
-
-
 @app.post("/api/ask", response_model=AskResponse)
 def ask_question(
     payload: RetrievalRequest,
+    _limit: None = Depends(enforce_daily_ip_limit),
     service: RetrievalService = Depends(get_service),
 ) -> AskResponse:
     chunks = retrieve_chunks(payload, service)
