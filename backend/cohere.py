@@ -5,6 +5,8 @@ from typing import Any
 
 import httpx
 
+from providers import post_with_retries
+
 
 COHERE_RERANK_URL = "https://api.cohere.com/v2/rerank"
 
@@ -43,8 +45,10 @@ class CohereReranker:
 
         scores = [0.0] * len(pairs)
         for query, indexed_documents in grouped.items():
-            response = self.http.post(
-                COHERE_RERANK_URL,
+            response = post_with_retries(
+                self.http.post,
+                provider="cohere",
+                url=COHERE_RERANK_URL,
                 json={
                     "model": self.model,
                     "query": query,

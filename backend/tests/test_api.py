@@ -24,9 +24,14 @@ class ApiTests(unittest.TestCase):
         app.dependency_overrides.clear()
 
     def test_retrieve_endpoint_is_not_exposed(self):
-        response = self.client.post("/api/retrieve", json={"question": "BGP?"})
+        response = self.client.post(
+            "/api/retrieve",
+            json={"question": "BGP?"},
+            headers={"X-Request-ID": "test-request-id"},
+        )
 
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.headers["X-Request-ID"], "test-request-id")
 
     def test_daily_limit_blocks_before_retrieval_and_returns_retry_after(self):
         service = Mock()

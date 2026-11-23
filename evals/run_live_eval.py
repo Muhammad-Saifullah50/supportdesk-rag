@@ -12,7 +12,7 @@ import json
 import re
 import statistics
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -123,12 +123,20 @@ def evaluate_entry(
             result["exact_refusal"] = answer == REFUSAL
         return result
     except HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        failure_class = {
+            429: "rate_limited",
+            502: "upstream_failure",
+            503: "service_unavailable",
+        }.get(exc.code, "http_error")
         return {
             "id": entry["id"],
             "category": entry["category"],
             "answerable": entry["answerable"],
-            "status": "http_error",
+            "status": "provider_error" if exc.code in {429, 502, 503} else "http_error",
+            "failure_class": failure_class,
             "http_status": exc.code,
+            "error_body": body[:500],
             "latency_ms": round((time.perf_counter() - started) * 1000, 2),
         }
     except (URLError, TimeoutError, json.JSONDecodeError, KeyError) as exc:
@@ -171,6 +179,14 @@ def summarize(results: list[dict]) -> dict:
         "total": len(results),
         "successful": len(successful),
         "errors": len(results) - len(successful),
+        "error_classes": dict(
+            Counter(
+                result.get("failure_class", result.get("status", "unknown"))
+                for result in results
+                if result["status"] != "ok"
+            )
+        ),
+        "failed_ids": [result["id"] for result in results if result["status"] != "ok"],
         "answerable_fact_recall": average(answerable, "fact_recall"),
         "answerable_all_key_facts_rate": average(
             [{"value": float(row["all_key_facts_present"])} for row in answerable],

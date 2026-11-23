@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import logging
 import os
+import time as clock
+import uuid
 from datetime import date, datetime, time, timedelta, timezone
 from math import ceil
 from pathlib import Path
@@ -21,6 +23,7 @@ from rag import (
     REFUSAL,
     RetrievalService,
 )
+from providers import ProviderError
 
 logger = logging.getLogger(__name__)
 app = FastAPI(title="SupportDesk-RAG API")
@@ -42,6 +45,36 @@ if DOCS_DIR.exists():
     app.mount("/docs", StaticFiles(directory=str(DOCS_DIR)), name="docs")
 
 _service: RetrievalService | None = None
+
+
+@app.middleware("http")
+async def request_observability(request: Request, call_next):
+    request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
+    started = clock.perf_counter()
+    try:
+        response = await call_next(request)
+    except Exception:
+        logger.exception(
+            "request_failed",
+            extra={
+                "request_id": request_id,
+                "method": request.method,
+                "path": request.url.path,
+            },
+        )
+        raise
+    response.headers["X-Request-ID"] = request_id
+    logger.info(
+        "request_completed",
+        extra={
+            "request_id": request_id,
+            "method": request.method,
+            "path": request.url.path,
+            "status_code": response.status_code,
+            "latency_ms": round((clock.perf_counter() - started) * 1000, 2),
+        },
+    )
+    return response
 
 
 class ChatMessage(BaseModel):
@@ -149,6 +182,22 @@ def retrieve_chunks(
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except ConfigurationError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except ProviderError as exc:
+        logger.warning(
+            "provider_failure",
+            extra={
+                "provider": exc.provider,
+                "provider_status": exc.status_code,
+                "retry_after": exc.retry_after,
+                "stage": "retrieval",
+            },
+        )
+        headers = {"Retry-After": exc.retry_after} if exc.retry_after else None
+        raise HTTPException(
+            status_code=502,
+            detail="Upstream retrieval provider failed.",
+            headers=headers,
+        ) from exc
     except Exception as exc:
         logger.exception("Retrieval failed")
         raise HTTPException(
@@ -221,6 +270,22 @@ def ask_question(
         logger.warning("Grounded answer rejected: %s", exc)
         raise HTTPException(
             status_code=502, detail="Grounded answer validation failed."
+        ) from exc
+    except ProviderError as exc:
+        logger.warning(
+            "provider_failure",
+            extra={
+                "provider": exc.provider,
+                "provider_status": exc.status_code,
+                "retry_after": exc.retry_after,
+                "stage": "generation",
+            },
+        )
+        headers = {"Retry-After": exc.retry_after} if exc.retry_after else None
+        raise HTTPException(
+            status_code=502,
+            detail="Upstream generation provider failed.",
+            headers=headers,
         ) from exc
     except Exception as exc:
         logger.exception("Answer generation failed")

@@ -4,6 +4,8 @@ from typing import Any
 
 import httpx
 
+from providers import post_with_retries
+
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 
@@ -15,10 +17,13 @@ class OpenRouterClient:
             timeout=60.0,
         )
         self._owns_http = http_client is None
+        self.last_usage: dict[str, Any] | None = None
 
     def embed(self, texts: list[str], model: str) -> list[list[float]]:
-        response = self.http.post(
-            "/embeddings",
+        response = post_with_retries(
+            self.http.post,
+            provider="openrouter",
+            url="/embeddings",
             json={"model": model, "input": texts, "encoding_format": "float"},
         )
         response.raise_for_status()
@@ -50,8 +55,10 @@ class OpenRouterClient:
         max_tokens: int,
         response_schema: dict[str, Any],
     ) -> str:
-        response = self.http.post(
-            "/chat/completions",
+        response = post_with_retries(
+            self.http.post,
+            provider="openrouter",
+            url="/chat/completions",
             json={
                 "model": model,
                 "temperature": 0,
@@ -66,7 +73,9 @@ class OpenRouterClient:
             },
         )
         response.raise_for_status()
-        choices = response.json().get("choices", [])
+        response_body = response.json()
+        self.last_usage = response_body.get("usage")
+        choices = response_body.get("choices", [])
         if not choices:
             raise RuntimeError("OpenRouter returned no completion choices.")
         choice = choices[0]
