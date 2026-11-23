@@ -1,41 +1,41 @@
 {
   "dataset": "evals/eval_dataset.json",
   "summary": {
-    "questions": 76,
+    "questions": 18,
     "section_recall@15": 1,
     "document_recall@15": 1,
-    "mrr": 0.7634,
+    "mrr": 0.6222,
     "stale_top1_rate": 0,
     "by_category": {
       "multi_hop": {
-        "questions": 12,
+        "questions": 3,
         "section_recall@15": 1,
-        "mrr": 0.8333
+        "mrr": 0.75
       },
       "numeric_calculation": {
-        "questions": 14,
+        "questions": 3,
         "section_recall@15": 1,
-        "mrr": 0.9048
+        "mrr": 0.7222
       },
       "procedural": {
-        "questions": 9,
+        "questions": 3,
         "section_recall@15": 1,
-        "mrr": 0.569
+        "mrr": 0.4556
       },
       "single_fact": {
-        "questions": 20,
+        "questions": 3,
         "section_recall@15": 1,
-        "mrr": 0.7458
+        "mrr": 0.5833
       },
       "tricky_ambiguous": {
-        "questions": 10,
+        "questions": 3,
         "section_recall@15": 1,
-        "mrr": 0.7367
+        "mrr": 0.3889
       },
       "version_conflict": {
-        "questions": 11,
+        "questions": 3,
         "section_recall@15": 1,
-        "mrr": 0.7227
+        "mrr": 0.8333
       }
     }
   },
@@ -49,14 +49,6 @@
       "stale_top1": false
     },
     {
-      "id": "q002",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.3333333333333333,
-      "stale_top1": false
-    },
-    {
       "id": "q003",
       "category": "single_fact",
       "section_hit": true,
@@ -65,135 +57,7 @@
       "stale_top1": false
     },
     {
-      "id": "q004",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q005",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q006",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q007",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q008",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.5,
-      "stale_top1": false
-    },
-    {
-      "id": "q009",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q010",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q011",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.3333333333333333,
-      "stale_top1": false
-    },
-    {
-      "id": "q012",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q013",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.5,
-      "stale_top1": false
-    },
-    {
       "id": "q014",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.5,
-      "stale_top1": false
-    },
-    {
-      "id": "q015",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q016",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.5,
-      "stale_top1": false
-    },
-    {
-      "id": "q017",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.5,
-      "stale_top1": false
-    },
-    {
-      "id": "q018",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q019",
-      "category": "single_fact",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q020",
       "category": "single_fact",
       "section_hit": true,
       "document_hit": true,
@@ -209,95 +73,7 @@
       "stale_top1": false
     },
     {
-      "id": "q022",
-      "category": "numeric_calculation",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q023",
-      "category": "numeric_calculation",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q024",
-      "category": "numeric_calculation",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q025",
-      "category": "numeric_calculation",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
       "id": "q026",
-      "category": "numeric_calculation",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q027",
-      "category": "numeric_calculation",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q028",
-      "category": "numeric_calculation",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q029",
-      "category": "numeric_calculation",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q030",
-      "category": "numeric_calculation",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q031",
-      "category": "numeric_calculation",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.5,
-      "stale_top1": false
-    },
-    {
-      "id": "q032",
-      "category": "numeric_calculation",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q033",
       "category": "numeric_calculation",
       "section_hit": true,
       "document_hit": true,
@@ -321,75 +97,11 @@
       "stale_top1": false
     },
     {
-      "id": "q036",
-      "category": "version_conflict",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q037",
-      "category": "version_conflict",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.5,
-      "stale_top1": false
-    },
-    {
-      "id": "q038",
-      "category": "version_conflict",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q039",
-      "category": "version_conflict",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.2,
-      "stale_top1": false
-    },
-    {
       "id": "q040",
       "category": "version_conflict",
       "section_hit": true,
       "document_hit": true,
       "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q041",
-      "category": "version_conflict",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q042",
-      "category": "version_conflict",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.5,
-      "stale_top1": false
-    },
-    {
-      "id": "q043",
-      "category": "version_conflict",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q044",
-      "category": "version_conflict",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.25,
       "stale_top1": false
     },
     {
@@ -409,79 +121,7 @@
       "stale_top1": false
     },
     {
-      "id": "q047",
-      "category": "multi_hop",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.5,
-      "stale_top1": false
-    },
-    {
-      "id": "q048",
-      "category": "multi_hop",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q049",
-      "category": "multi_hop",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
       "id": "q050",
-      "category": "multi_hop",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q051",
-      "category": "multi_hop",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q052",
-      "category": "multi_hop",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.25,
-      "stale_top1": false
-    },
-    {
-      "id": "q053",
-      "category": "multi_hop",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q054",
-      "category": "multi_hop",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q055",
-      "category": "multi_hop",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q056",
       "category": "multi_hop",
       "section_hit": true,
       "document_hit": true,
@@ -513,62 +153,6 @@
       "stale_top1": false
     },
     {
-      "id": "q060",
-      "category": "tricky_ambiguous",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q061",
-      "category": "tricky_ambiguous",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q062",
-      "category": "tricky_ambiguous",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.2,
-      "stale_top1": false
-    },
-    {
-      "id": "q063",
-      "category": "tricky_ambiguous",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q064",
-      "category": "tricky_ambiguous",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q065",
-      "category": "tricky_ambiguous",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q066",
-      "category": "tricky_ambiguous",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
       "id": "q067",
       "category": "tricky_ambiguous",
       "section_hit": true,
@@ -590,54 +174,6 @@
       "section_hit": true,
       "document_hit": true,
       "mrr": 0.16666666666666666,
-      "stale_top1": false
-    },
-    {
-      "id": "q070",
-      "category": "procedural",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q071",
-      "category": "procedural",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.14285714285714285,
-      "stale_top1": false
-    },
-    {
-      "id": "q072",
-      "category": "procedural",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.1111111111111111,
-      "stale_top1": false
-    },
-    {
-      "id": "q073",
-      "category": "procedural",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 0.5,
-      "stale_top1": false
-    },
-    {
-      "id": "q074",
-      "category": "procedural",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
-      "stale_top1": false
-    },
-    {
-      "id": "q075",
-      "category": "procedural",
-      "section_hit": true,
-      "document_hit": true,
-      "mrr": 1.0,
       "stale_top1": false
     },
     {

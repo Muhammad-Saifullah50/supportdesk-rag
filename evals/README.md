@@ -1,6 +1,6 @@
 # Evaluation Workflow
 
-`eval_dataset.json` is the canonical 86-question gold set. `build_evals.py` validates it and regenerates the line-oriented `eval_dataset.jsonl` form.
+`eval_dataset.json` is the canonical 20-question smoke set. The original 86-question set is preserved in `eval_dataset.full.json`. `build_evals.py` validates the smoke set and regenerates the line-oriented `eval_dataset.jsonl` form.
 
 ## Retrieval Baseline
 

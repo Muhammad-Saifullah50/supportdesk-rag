@@ -47,7 +47,7 @@ python evals/run_live_eval.py \
   --output evals/runs/$(date -u +%Y-%m-%dT%H%M%SZ).json
 ```
 
-The evaluator records answerable fact recall, exact refusal rate, citation validity, expected-source coverage, latency, category metrics, and provider/API failures. A provider failure is not counted as an answer-quality failure.
+The evaluator records answerable fact recall, exact refusal rate, citation validity, expected-source coverage, latency, category metrics, and provider/API failures. A provider failure is not counted as an answer-quality failure. The default smoke set contains 20 representative cases; the original 86-case set is preserved as `evals/eval_dataset.full.json`.
 
 ## Guarantees
 
