@@ -1,0 +1,188 @@
+{
+  "dataset": "evals/eval_dataset.json",
+  "summary": {
+    "questions": 18,
+    "section_recall@15": 1,
+    "document_recall@15": 1,
+    "mrr": 0.6222,
+    "stale_top1_rate": 0,
+    "by_category": {
+      "multi_hop": {
+        "questions": 3,
+        "section_recall@15": 1,
+        "mrr": 0.75
+      },
+      "numeric_calculation": {
+        "questions": 3,
+        "section_recall@15": 1,
+        "mrr": 0.7222
+      },
+      "procedural": {
+        "questions": 3,
+        "section_recall@15": 1,
+        "mrr": 0.4556
+      },
+      "single_fact": {
+        "questions": 3,
+        "section_recall@15": 1,
+        "mrr": 0.5833
+      },
+      "tricky_ambiguous": {
+        "questions": 3,
+        "section_recall@15": 1,
+        "mrr": 0.3889
+      },
+      "version_conflict": {
+        "questions": 3,
+        "section_recall@15": 1,
+        "mrr": 0.8333
+      }
+    }
+  },
+  "rows": [
+    {
+      "id": "q001",
+      "category": "single_fact",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 0.25,
+      "stale_top1": false
+    },
+    {
+      "id": "q003",
+      "category": "single_fact",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 1.0,
+      "stale_top1": false
+    },
+    {
+      "id": "q014",
+      "category": "single_fact",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 0.5,
+      "stale_top1": false
+    },
+    {
+      "id": "q021",
+      "category": "numeric_calculation",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 1.0,
+      "stale_top1": false
+    },
+    {
+      "id": "q026",
+      "category": "numeric_calculation",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 1.0,
+      "stale_top1": false
+    },
+    {
+      "id": "q034",
+      "category": "numeric_calculation",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 0.16666666666666666,
+      "stale_top1": false
+    },
+    {
+      "id": "q035",
+      "category": "version_conflict",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 0.5,
+      "stale_top1": false
+    },
+    {
+      "id": "q040",
+      "category": "version_conflict",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 1.0,
+      "stale_top1": false
+    },
+    {
+      "id": "q045",
+      "category": "version_conflict",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 1.0,
+      "stale_top1": false
+    },
+    {
+      "id": "q046",
+      "category": "multi_hop",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 0.25,
+      "stale_top1": false
+    },
+    {
+      "id": "q050",
+      "category": "multi_hop",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 1.0,
+      "stale_top1": false
+    },
+    {
+      "id": "q057",
+      "category": "multi_hop",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 1.0,
+      "stale_top1": false
+    },
+    {
+      "id": "q058",
+      "category": "tricky_ambiguous",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 0.5,
+      "stale_top1": false
+    },
+    {
+      "id": "q059",
+      "category": "tricky_ambiguous",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 0.16666666666666666,
+      "stale_top1": false
+    },
+    {
+      "id": "q067",
+      "category": "tricky_ambiguous",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 0.5,
+      "stale_top1": false
+    },
+    {
+      "id": "q068",
+      "category": "procedural",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 0.2,
+      "stale_top1": false
+    },
+    {
+      "id": "q069",
+      "category": "procedural",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 0.16666666666666666,
+      "stale_top1": false
+    },
+    {
+      "id": "q076",
+      "category": "procedural",
+      "section_hit": true,
+      "document_hit": true,
+      "mrr": 1.0,
+      "stale_top1": false
+    }
+  ]
+}

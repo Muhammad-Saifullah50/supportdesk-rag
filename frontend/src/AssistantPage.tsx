@@ -58,7 +58,10 @@ export const AssistantPage: React.FC = () => {
       }
 
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
+        const requestId = res.headers.get('x-request-id');
+        const body = await res.json().catch(() => null) as { detail?: string } | null;
+        const detail = body?.detail || `HTTP ${res.status}`;
+        throw new Error(requestId ? `${detail} (request ${requestId})` : detail);
       }
       const data: AskResponse = await res.json();
       setTurns((currentTurns) => currentTurns.map((turn, index) => (
@@ -69,10 +72,15 @@ export const AssistantPage: React.FC = () => {
         { role: 'user' as const, content: trimmed },
         { role: 'assistant' as const, content: data.answer },
       ].slice(-20));
-    } catch {
+    } catch (error) {
       setTurns((currentTurns) => currentTurns.map((turn, index) => (
         index === currentTurns.length - 1
-          ? { ...turn, error: 'The grounded retrieval service is unavailable. Try again when the backend is ready.' }
+          ? {
+              ...turn,
+              error: error instanceof Error
+                ? error.message
+                : 'The grounded retrieval service is unavailable. Try again later.',
+            }
           : turn
       )));
     } finally {

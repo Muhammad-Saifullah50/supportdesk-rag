@@ -17,7 +17,7 @@ This reports section Recall@15, document Recall@15, MRR, stale-document top-1 ra
 Run the deployed API evaluator:
 
 ```bash
-EVAL_BASE_URL=https://your-backend.example.com make eval
+EVAL_BASE_URL=https://supportdesk-backend-sigma.vercel.app make eval
 ```
 
 The report separates answer-quality metrics from infrastructure failures. OpenRouter or Cohere `429`/`502` responses are recorded under `error_classes` and excluded from answer-quality denominators.

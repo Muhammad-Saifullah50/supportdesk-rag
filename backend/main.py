@@ -31,12 +31,21 @@ DAILY_REQUEST_LIMIT = int(os.getenv("DAILY_REQUEST_LIMIT", "10"))
 _daily_request_counts: dict[str, tuple[date, int]] = {}
 _daily_request_counts_lock = Lock()
 
+
+def configured_origins() -> list[str]:
+    value = os.getenv(
+        "ALLOWED_ORIGINS",
+        "https://supportdesk-frontewnd.vercel.app,http://localhost:3000",
+    )
+    return [origin.strip().rstrip("/") for origin in value.split(",") if origin.strip()]
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=configured_origins(),
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "X-Request-ID"],
 )
 
 ROOT_DIR = Path(__file__).resolve().parent.parent

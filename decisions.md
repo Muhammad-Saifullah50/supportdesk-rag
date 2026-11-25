@@ -1,33 +1,29 @@
-1. Why Header-Aware Chunking (300–500 Tokens) Instead of Fixed Character Splitting?
+# Architecture Decisions
 
-we split by sections so that logical clauses remain intact. We cap them on 500 tokens tro make sure that no extra noise  dilutes the embedding vector
+## 1. Header-aware chunking
 
-2. Why Hard Metadata Pre-Filtering Before Search?
+Documents are split around headings so logical clauses remain together. Chunks target approximately 300-500 tokens with a 50-token overlap. This preserves context without allowing unrelated sections to dilute the representation.
 
-We do pre filtering to narrow down the search space before perfdorming vector search. this increases the efficiency of the syustem as it prevents us from searchiung through unrelated vecotrs
+## 2. Metadata filtering before search
 
-3. Why Hybrid Search (Dense + BM25) Instead of Just Vector Search?
+Region, category, and effective-date filters are applied before similarity evaluation. This prevents unrelated documents from influencing ranking and keeps the evidence set auditable.
 
-Dense embeddings lose precison on exact stirngd (codes, numbers etc). Pairing it with a keyword matching algorithm makes sure we tale into amount both conceoptual questions and exact code lookups.
+## 3. Hybrid search
 
-4. Why Reciprocal Rank Fusion (RRF) Instead of Averaging Raw Scores?
+Dense embeddings handle paraphrased questions, while BM25 handles exact strings such as codes, numbers, and plan names. Combining both improves coverage across the sample corpus.
 
-cosine siomilarity outoputs numnbers between 0 and 1, while bm25 outpouts rsandom positive numbers. we cannot cleanly add or average them without complex normalization. RRF ignores the raw scopres completelky and looks only at rank oposition.
+## 4. Reciprocal Rank Fusion
 
-5. Why a Cross-Encoder Reranker Instead of Trusting RRF Top-K?
+Dense and BM25 retrieval scores are not directly comparable. Reciprocal Rank Fusion combines their rankings without inventing a shared score scale.
 
-the bi encoders used in vecotr search compleress the query ionto one vector and the documnet into another vector. They never read then two vecotrs together. 
+## 5. Cross-encoder reranking
 
-A cross encoder takes the query + chunk into a single transformer pass and performs full tioken by token cross attention.
+Initial retrieval encodes the question and document separately. A cross-encoder evaluates the question and chunk together, producing a stricter relevance score. It is applied only to the top 15 RRF results to control latency.
 
-It is slow , thats is why we run it on the surviving 15 from RRF.
+## 6. Score threshold and refusal circuit
 
-6. Why a Hard Score Cutoff + LLM Bypass Circuit Breaker?
+The reranker threshold is `0.35`. If no chunk survives, the API returns the exact refusal message without invoking the language model. This makes out-of-corpus behavior deterministic.
 
-LLMs are trtained to be helpful. They have to give answers tio anything. 
+## 7. Embedding provider and model
 
-Thats why we put a threshold and if no chuink passess through the threshold, we do not invikle the llm . in this way we dont  give llm a chance to hallucionate and we refuse deterministically.
-
-7. Embedding Provider and Model
-
-The implementation uses OpenRouter's `nvidia/nemotron-3.5-embed-1b:free` for both document and query embeddings, returning 2048-dimensional vectors. This is an explicit implementation choice that supersedes the embedding model named in the technical specification. Re-embedding and a compatible Qdrant collection are required if the embedding model changes.
+The implementation uses OpenRouter's `nvidia/nemotron-3.5-embed-1b:free` for document and query embeddings, returning 2048-dimensional vectors. Changing the model requires re-embedding the corpus and using a compatible Qdrant collection.

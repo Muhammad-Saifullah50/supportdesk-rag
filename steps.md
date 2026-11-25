@@ -1,28 +1,30 @@
-step 1 - pre filtering
-step 2 - Hybrid Retireval
-step 3 - Cross Encoder Reranking
+# Retrieval Pipeline
 
-step 1 -> we narrow down ther vector search space using fixed rules. This rule is applied directyl in the vector store. that way if the user asks for Enropean region we dont want to search us reguion manulas, so we filrter them and narrow the search space. Same can be done 
+This portfolio project uses a grounded retrieval pipeline. The order is deliberate because each stage reduces the chance of irrelevant or unsupported evidence reaching answer generation.
 
-Step 2 -> Hybrid retrieval means we run two separate paralell searches on the remaing vecotrs. 
+## 1. Metadata pre-filtering
 
-1 Dense Search -> uses an embedding model to find chunks that matcgh the meaning of the suestion
+Region, category, and effective-date filters are applied before similarity scoring. For example, a regional question should not be ranked against documents from unrelated regions.
 
-2. Sparse Search -> Is a keyword search algorithm. it looks for exact word matches. we need this to match exact codes etc as embedding fall short in matching exact things.
+## 2. Hybrid retrieval
 
-3 Then we use Reciprocal Rank Fusion to merge top scoring results from bioth algorithms 
+Two searches run over the filtered corpus:
 
+- Dense search finds chunks with similar meaning using embeddings.
+- BM25 lexical search preserves exact matches for codes, numbers, plan names, and error messages.
 
-Then we do Cross Encoder Reranking
+Reciprocal Rank Fusion combines the two ranked lists without requiring their raw scores to use the same scale.
 
-The problem is that vector search compares the query and documents separately. A cross encoder takes the top 15 results from RRF and compares the users question side by side with each chunk and calculates a strict relevance score for each chunk. usually between 0 and 1.
+## 3. Cross-encoder reranking
 
-Then a threshold is applied. say 0.35. 
+The pipeline keeps exactly the top 15 fused chunks. A cross-encoder compares the question and each chunk together, producing a stricter relevance score.
 
-Every chunk which has a relwevance score below the threshold gets discardded and only the leftover chunks get sent to the llm
+Chunks scoring below `0.35` are discarded.
 
-These results then go to the llm
+## 4. Grounded generation
 
-The llm synthesizes the chunks and question and provides a user friendly answer.
+Only surviving chunks are passed to the language model. The answer validator checks that citations refer to retrieved document sections.
 
-Refusal Guardrail -> When the cross encoder discards everything below the threshold, we check how many chunks are left. if there are none, we do not call the llm. and return a message to the user instead oif hallucination
+## 5. Refusal guardrail
+
+If every chunk falls below the reranking threshold, the language model is not called. The API returns the exact refusal message instead of guessing.

@@ -1,0 +1,166 @@
+{
+  "generated_at": "2026-11-25T05:03:21.475659+00:00",
+  "base_url": "https://supportdesk-backend-sigma.vercel.app",
+  "dataset": "/tmp/opencode/eval-remaining-9.json",
+  "dataset_count": 9,
+  "summary": {
+    "total": 9,
+    "successful": 9,
+    "errors": 0,
+    "error_classes": {},
+    "failed_ids": [],
+    "answerable_fact_recall": 0.7024,
+    "answerable_all_key_facts_rate": 0.5714,
+    "unanswerable_exact_refusal_rate": 1,
+    "citation_valid_rate": 1.0,
+    "expected_document_coverage": 0.5926,
+    "latency_ms": {
+      "average": 21199.88,
+      "p50": 22381.7,
+      "p95": 27966.21
+    },
+    "by_category": {
+      "multi_hop": {
+        "count": 2,
+        "fact_recall": 1.0,
+        "exact_refusal_rate": 0.0,
+        "citation_valid_rate": 1.0
+      },
+      "procedural": {
+        "count": 3,
+        "fact_recall": 0.75,
+        "exact_refusal_rate": 0.0,
+        "citation_valid_rate": 1.0
+      },
+      "tricky_ambiguous": {
+        "count": 2,
+        "fact_recall": 0.3333,
+        "exact_refusal_rate": 0.0,
+        "citation_valid_rate": 1.0
+      },
+      "unanswerable": {
+        "count": 2,
+        "fact_recall": 0.0,
+        "exact_refusal_rate": 1,
+        "citation_valid_rate": 1.0
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "q050",
+      "category": "multi_hop",
+      "answerable": true,
+      "status": "ok",
+      "latency_ms": 27966.21,
+      "citation_valid": true,
+      "citation_count": 2,
+      "expected_document_coverage": 1.0,
+      "answer": "A Growth customer paying $149/month with a single 3-hour outage in a 30-day month has monthly uptime of approximately 99.58%, which falls below the Growth commitment of 99.9% but is at least 99.0%, so they are eligible for a 10% credit. [Doc: northwind_sla_support_tiers, Section: 3. Service credits]\nThe credit amount is 10% of $149, which equals $14.90, applied to a future invoice rather than paid out in cash. [Doc: northwind_sla_support_tiers, Section: 3. Service credits]\nTo claim the credit, the customer must open a support ticket within 30 days after the end of the month in which the downtime occurred, referencing the dates and times affected; approved credits are applied to the next invoice. [Doc: northwind_sla_support_tiers, Section: 4. Claiming a credit]",
+      "fact_recall": 1.0,
+      "all_key_facts_present": true
+    },
+    {
+      "id": "q057",
+      "category": "multi_hop",
+      "answerable": true,
+      "status": "ok",
+      "latency_ms": 27724.38,
+      "citation_valid": true,
+      "citation_count": 1,
+      "expected_document_coverage": 0.3333333333333333,
+      "answer": "On the Starter plan, uploads are limited to 10 MB, so a 30 MB file exceeds the limit and causes a 413 payload_too_large error. [Doc: northwind_troubleshooting_faq, Section: 4. I get 413 payload_too_large]\nThe recommended options are to compress the file, split it into smaller parts, or upgrade to a plan with a higher limit (50 MB on Growth or 200 MB on Enterprise). [Doc: northwind_troubleshooting_faq, Section: 4. I get 413 payload_too_large]",
+      "fact_recall": 1.0,
+      "all_key_facts_present": true
+    },
+    {
+      "id": "q059",
+      "category": "tricky_ambiguous",
+      "answerable": true,
+      "status": "ok",
+      "latency_ms": 21865.18,
+      "citation_valid": true,
+      "citation_count": 0,
+      "expected_document_coverage": 0.0,
+      "answer": "I do not have sufficient information in the provided corpus to answer this question.",
+      "fact_recall": 0.0,
+      "all_key_facts_present": false
+    },
+    {
+      "id": "q067",
+      "category": "tricky_ambiguous",
+      "answerable": true,
+      "status": "ok",
+      "latency_ms": 22381.7,
+      "citation_valid": true,
+      "citation_count": 2,
+      "expected_document_coverage": 1.0,
+      "answer": "A 4-hour Sev2 first-response target for Growth customers is available only as part of the Premier Support add-on, not as part of the base Growth plan. [Doc: northwind_sla_support_tiers, Section: 12. Premier Support add-on] [Doc: northwind_sla_support_tiers, Section: 9. First-response targets]",
+      "fact_recall": 0.6666666666666666,
+      "all_key_facts_present": false
+    },
+    {
+      "id": "q068",
+      "category": "procedural",
+      "answerable": true,
+      "status": "ok",
+      "latency_ms": 22669.72,
+      "citation_valid": true,
+      "citation_count": 1,
+      "expected_document_coverage": 1.0,
+      "answer": "Only users with the Owner role can cancel a plan by going to Settings > Billing > Cancel plan. [Doc: northwind_refund_cancellation_policy, Section: 8. Cancelling a plan]\nPaid features stay active until the end of the paid period, after which the account reverts to the Free plan. [Doc: northwind_refund_cancellation_policy, Section: 8. Cancelling a plan]\nProjects exceeding Free plan limits become read-only for 30 days and are then permanently deleted, so data should be exported before then. [Doc: northwind_refund_cancellation_policy, Section: 8. Cancelling a plan]",
+      "fact_recall": 1.0,
+      "all_key_facts_present": true
+    },
+    {
+      "id": "q069",
+      "category": "procedural",
+      "answerable": true,
+      "status": "ok",
+      "latency_ms": 18059.09,
+      "citation_valid": true,
+      "citation_count": 3,
+      "expected_document_coverage": 1.0,
+      "answer": "Every webhook delivery includes the header X-Northwind-Signature: t=<timestamp>,v1=<signature>. [Doc: northwind_api_reference, Section: 9. Webhooks]\nThe signature is an HMAC-SHA256 of the string <timestamp>.<raw request body> using your endpoint secret. [Doc: northwind_api_reference, Section: 9. Webhooks]\nVerify the signature using the raw request body, not re-serialized. [Doc: northwind_troubleshooting_faq, Section: 7. My webhooks are not arriving]\nReject deliveries whose timestamp is more than 5 minutes old. [Doc: northwind_api_reference, Section: 9. Webhooks] [Doc: northwind_onboarding_guide, Section: 9. Production readiness checklist]",
+      "fact_recall": 1.0,
+      "all_key_facts_present": true
+    },
+    {
+      "id": "q076",
+      "category": "procedural",
+      "answerable": true,
+      "status": "ok",
+      "latency_ms": 30989.47,
+      "citation_valid": true,
+      "citation_count": 3,
+      "expected_document_coverage": 1.0,
+      "answer": "Change the base path from /v2 to /v3. [Doc: northwind_onboarding_guide, Section: 10. Migrating from API v2]\nAPI v2 was shut down on 2026-03-31 and requests to v2 endpoints now return 410 Gone. [Doc: northwind_api_reference, Section: 11. Versioning and deprecation] [Doc: northwind_platform_policy_changelog, Section: 5. 2026-03-31 \u2014 API v2 shut down]",
+      "fact_recall": 0.25,
+      "all_key_facts_present": false
+    },
+    {
+      "id": "q077",
+      "category": "unanswerable",
+      "answerable": false,
+      "status": "ok",
+      "latency_ms": 18420.69,
+      "citation_valid": true,
+      "citation_count": 0,
+      "expected_document_coverage": 0.0,
+      "answer": "I do not have sufficient information in the provided corpus to answer this question.",
+      "exact_refusal": true
+    },
+    {
+      "id": "q078",
+      "category": "unanswerable",
+      "answerable": false,
+      "status": "ok",
+      "latency_ms": 722.48,
+      "citation_valid": true,
+      "citation_count": 0,
+      "expected_document_coverage": 0.0,
+      "answer": "I do not have sufficient information in the provided corpus to answer this question.",
+      "exact_refusal": true
+    }
+  ]
+}

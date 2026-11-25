@@ -2,7 +2,7 @@
 
 Example:
     python evals/run_live_eval.py \
-        --base-url https://supportdesk-backend-muhammadsaifullah50s-projects.vercel.app
+        --base-url https://supportdesk-backend-sigma.vercel.app
 """
 
 from __future__ import annotations
